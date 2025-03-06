@@ -112,7 +112,6 @@ const RevenueMonitoring = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-1/3"
-            icon={<Search />}
           />
           <Select onValueChange={setSourceFilter} defaultValue={sourceFilter}>
             <SelectTrigger className="w-40">

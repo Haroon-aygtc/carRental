@@ -1,6 +1,14 @@
 import { Suspense } from "react";
 import { useRoutes, Routes, Route, Navigate } from "react-router-dom";
-import Home from "./components/home";
+import HomePage from "./pages/website/HomePage";
+import ServicesPage from "./pages/website/ServicesPage";
+import TestimonialsPage from "./pages/website/TestimonialsPage";
+import BlogPage from "./pages/website/BlogPage";
+import VehicleGalleryPage from "./pages/website/VehicleGalleryPage";
+import ServiceLocationsPage from "./pages/website/ServiceLocationsPage";
+import BookingPage from "./pages/website/BookingPage";
+import LoginPage from "./pages/passenger/LoginPage";
+import DashboardPage from "./pages/passenger/DashboardPage";
 import routes from "tempo-routes";
 import Dashboard from "./pages/admin/dashboard";
 import UserManagement from "./pages/admin/user-management";
@@ -9,6 +17,9 @@ import FleetManagement from "./pages/admin/fleet-management";
 import BookingManagement from "./pages/admin/booking-management";
 import FinancialTools from "./pages/admin/financial-tools";
 import Reports from "./pages/admin/reports";
+import GenerateReports from "./pages/admin/reports/GenerateReports";
+import ExportAsPDF from "./pages/admin/reports/ExportAsPDF";
+import ExportAsExcel from "./pages/admin/reports/ExportAsExcel";
 import Settings from "./pages/admin/settings";
 import AdminLayout from "./components/admin/AdminLayout";
 
@@ -41,13 +52,21 @@ import RevenueMonitoring from "./pages/admin/financial-tools/RevenueMonitoring";
 function App() {
   return (
     <Suspense fallback={<p>Loading...</p>}>
-      <>
+      <div>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/testimonials" element={<TestimonialsPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/vehicles" element={<VehicleGalleryPage />} />
+          <Route path="/locations" element={<ServiceLocationsPage />} />
+          <Route path="/booking" element={<BookingPage />} />
           <Route
             path="/admin"
             element={<Navigate to="/admin/dashboard" replace />}
           />
+          <Route path="/passenger/login" element={<LoginPage />} />
+          <Route path="/passenger/dashboard" element={<DashboardPage />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
 
@@ -121,7 +140,12 @@ function App() {
               element={<RevenueMonitoring />}
             />
 
-            <Route path="reports" element={<Reports />} />
+            <Route path="reports" element={<Reports />}>
+              <Route path="generate" element={<GenerateReports />} />
+              <Route path="pdf" element={<ExportAsPDF />} />
+              <Route path="excel" element={<ExportAsExcel />} />
+              <Route index element={<Navigate to="generate" replace />} />
+            </Route>
             <Route path="settings" element={<Settings />} />
           </Route>
           {/* Tempobook routes for development */}
@@ -130,7 +154,7 @@ function App() {
           )}
         </Routes>
         {import.meta.env.VITE_TEMPO === "true" && useRoutes(routes)}
-      </>
+      </div>
     </Suspense>
   );
 }
