@@ -12,8 +12,8 @@ import {
   Phone,
   MessageSquare,
   ArrowLeft,
-  Navigation,
 } from "lucide-react";
+import RealTimeMap from "@/components/passenger/RealTimeMap";
 
 const TrackRidePage = () => {
   // Mock active trip
@@ -38,32 +38,7 @@ const TrackRidePage = () => {
     currentLocation: "5th Avenue & 42nd Street",
   });
 
-  // Simulate ETA updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const etaMinutes = parseInt(activeTrip.eta.split(" ")[0]);
-      if (etaMinutes > 1) {
-        setActiveTrip({
-          ...activeTrip,
-          eta: `${etaMinutes - 1} minutes`,
-        });
-      } else if (etaMinutes === 1) {
-        setActiveTrip({
-          ...activeTrip,
-          eta: "Less than a minute",
-        });
-      } else {
-        clearInterval(interval);
-        setActiveTrip({
-          ...activeTrip,
-          status: "arrived",
-          eta: "Arrived",
-        });
-      }
-    }, 10000); // Update every 10 seconds for demo purposes
-
-    return () => clearInterval(interval);
-  }, [activeTrip]);
+  // This effect is now handled by the RealTimeMap component
 
   return (
     <div className="bg-[#F7F7F7] min-h-screen font-serif">
@@ -103,36 +78,21 @@ const TrackRidePage = () => {
             <div className="md:col-span-2">
               <Card className="bg-white shadow-lg h-full">
                 <CardContent className="p-0 h-full">
-                  {/* This would be a real map in a production app */}
-                  <div className="bg-gray-200 h-[400px] relative">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center">
-                        <Navigation className="h-12 w-12 text-[#001F3F] mx-auto mb-4" />
-                        <p className="text-gray-600 text-lg">
-                          Interactive map would be displayed here
-                        </p>
-                        <p className="text-gray-500">
-                          Showing driver's location and route to destination
-                        </p>
-                      </div>
-                    </div>
-                    <div className="absolute bottom-4 left-4 bg-white p-3 rounded-lg shadow-md">
-                      <div className="flex items-center">
-                        <div className="h-3 w-3 rounded-full bg-blue-500 mr-2"></div>
-                        <span className="text-sm">Your pickup location</span>
-                      </div>
-                      <div className="flex items-center mt-1">
-                        <div className="h-3 w-3 rounded-full bg-green-500 mr-2"></div>
-                        <span className="text-sm">Your destination</span>
-                      </div>
-                      <div className="flex items-center mt-1">
-                        <div className="h-3 w-3 rounded-full bg-red-500 mr-2"></div>
-                        <span className="text-sm">
-                          Driver's current location
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <RealTimeMap
+                    pickupLocation={activeTrip.pickup}
+                    destination={activeTrip.destination}
+                    driverLocation={activeTrip.currentLocation}
+                    eta={activeTrip.eta}
+                    onLocationUpdate={(newLocation, newEta) => {
+                      setActiveTrip((prev) => ({
+                        ...prev,
+                        currentLocation: newLocation,
+                        eta: newEta,
+                        status:
+                          newEta === "Arrived" ? "arrived" : "in-progress",
+                      }));
+                    }}
+                  />
                 </CardContent>
               </Card>
             </div>

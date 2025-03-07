@@ -4,7 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
-import { CreditCard, Plus, Trash2, Check, ArrowLeft } from "lucide-react";
+import {
+  CreditCard,
+  Plus,
+  Trash2,
+  Check,
+  ArrowLeft,
+  AlertCircle,
+} from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
+import PaymentMethodForm from "@/components/passenger/PaymentMethodForm";
 import { Badge } from "@/components/ui/badge";
 
 const PaymentMethodsPage = () => {
@@ -44,18 +53,7 @@ const PaymentMethodsPage = () => {
     });
   };
 
-  const handleAddCard = (e) => {
-    e.preventDefault();
-    // In a real app, would send to payment processor
-    const newPaymentMethod = {
-      id: `pm${paymentMethods.length + 1}`,
-      type: "credit",
-      brand: "Visa", // Would be determined by the card number in a real app
-      last4: newCard.cardNumber.slice(-4),
-      expiry: newCard.expiry,
-      isDefault: false,
-    };
-
+  const handleAddCard = (newPaymentMethod) => {
     setPaymentMethods([...paymentMethods, newPaymentMethod]);
     setNewCard({
       cardNumber: "",
@@ -73,10 +71,38 @@ const PaymentMethodsPage = () => {
         isDefault: method.id === id,
       })),
     );
+
+    // Show confirmation toast
+    const defaultCard = paymentMethods.find((method) => method.id === id);
+    if (defaultCard) {
+      toast({
+        title: "Default payment method updated",
+        description: `${defaultCard.brand} card ending in ${defaultCard.last4} is now your default payment method.`,
+      });
+    }
   };
 
   const handleDeleteCard = (id) => {
+    const cardToDelete = paymentMethods.find((method) => method.id === id);
+
+    if (cardToDelete?.isDefault) {
+      toast({
+        title: "Cannot delete default payment method",
+        description:
+          "Please set another payment method as default before deleting this one.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setPaymentMethods(paymentMethods.filter((method) => method.id !== id));
+
+    if (cardToDelete) {
+      toast({
+        title: "Payment method removed",
+        description: `${cardToDelete.brand} card ending in ${cardToDelete.last4} has been removed.`,
+      });
+    }
   };
 
   const getBrandIcon = (brand) => {
@@ -143,82 +169,10 @@ const PaymentMethodsPage = () => {
                 <h3 className="text-lg font-medium mb-4 font-sans">
                   Add New Payment Method
                 </h3>
-                <form onSubmit={handleAddCard} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="cardName" className="font-sans">
-                      Name on Card
-                    </Label>
-                    <Input
-                      id="cardName"
-                      name="cardName"
-                      value={newCard.cardName}
-                      onChange={handleInputChange}
-                      placeholder="John Smith"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="cardNumber" className="font-sans">
-                      Card Number
-                    </Label>
-                    <div className="relative">
-                      <CreditCard className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="cardNumber"
-                        name="cardNumber"
-                        value={newCard.cardNumber}
-                        onChange={handleInputChange}
-                        placeholder="1234 5678 9012 3456"
-                        className="pl-10"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="expiry" className="font-sans">
-                        Expiry Date
-                      </Label>
-                      <Input
-                        id="expiry"
-                        name="expiry"
-                        value={newCard.expiry}
-                        onChange={handleInputChange}
-                        placeholder="MM/YY"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="cvc" className="font-sans">
-                        CVC
-                      </Label>
-                      <Input
-                        id="cvc"
-                        name="cvc"
-                        value={newCard.cvc}
-                        onChange={handleInputChange}
-                        placeholder="123"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="pt-4 flex justify-end space-x-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setShowAddForm(false)}
-                      className="font-sans"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      className="bg-[#001F3F] hover:bg-blue-900 text-white font-sans rounded-md shadow-sm"
-                    >
-                      Add Card
-                    </Button>
-                  </div>
-                </form>
+                <PaymentMethodForm
+                  onAddCard={handleAddCard}
+                  onCancel={() => setShowAddForm(false)}
+                />
               </div>
             ) : (
               <div className="space-y-4">

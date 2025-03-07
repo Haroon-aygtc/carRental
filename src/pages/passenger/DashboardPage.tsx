@@ -17,6 +17,7 @@ import {
   Plus,
   ChevronRight,
 } from "lucide-react";
+import ETADisplay from "@/components/passenger/ETADisplay";
 
 const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -310,10 +311,10 @@ const DashboardPage = () => {
                               </p>
                             </div>
                           </div>
-                          <div>
-                            <p className="text-sm text-gray-500 mb-1">ETA</p>
-                            <p className="font-medium">{activeTrip.eta}</p>
-                          </div>
+                          <ETADisplay
+                            initialEta={activeTrip.eta}
+                            tripId={activeTrip.id}
+                          />
                         </div>
                       </div>
 
