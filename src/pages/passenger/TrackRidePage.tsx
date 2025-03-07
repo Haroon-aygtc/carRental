@@ -184,12 +184,22 @@ const TrackRidePage = () => {
                   </div>
 
                   <div className="mt-4 flex space-x-2">
-                    <Button variant="outline" className="flex-1 font-sans">
-                      <Phone className="h-4 w-4 mr-2" /> Call
-                    </Button>
-                    <Button variant="outline" className="flex-1 font-sans">
-                      <MessageSquare className="h-4 w-4 mr-2" /> Message
-                    </Button>
+                    <a
+                      href={`tel:${activeTrip.driver.phone}`}
+                      className="flex-1"
+                    >
+                      <Button variant="outline" className="w-full font-sans">
+                        <Phone className="h-4 w-4 mr-2" /> Call
+                      </Button>
+                    </a>
+                    <a
+                      href={`sms:${activeTrip.driver.phone}`}
+                      className="flex-1"
+                    >
+                      <Button variant="outline" className="w-full font-sans">
+                        <MessageSquare className="h-4 w-4 mr-2" /> Message
+                      </Button>
+                    </a>
                   </div>
                 </CardContent>
               </Card>
@@ -209,12 +219,16 @@ const TrackRidePage = () => {
                   </p>
                 </div>
                 <div className="flex space-x-3">
-                  <Button variant="outline" className="font-sans">
-                    Cancel Ride
-                  </Button>
-                  <Button className="bg-[#001F3F] hover:bg-blue-900 text-white font-sans rounded-md shadow-sm">
-                    Contact Support
-                  </Button>
+                  <Link to={`/passenger/book?cancel=${activeTrip.id}`}>
+                    <Button variant="outline" className="font-sans">
+                      Cancel Ride
+                    </Button>
+                  </Link>
+                  <a href="tel:+18001234567">
+                    <Button className="bg-[#001F3F] hover:bg-blue-900 text-white font-sans rounded-md shadow-sm">
+                      Contact Support
+                    </Button>
+                  </a>
                 </div>
               </div>
             </CardContent>

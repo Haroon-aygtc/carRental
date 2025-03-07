@@ -103,7 +103,15 @@ const AdminHeader = ({
               <span>Settings</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Log out</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={async () => {
+                const { signOut } = await import("@/lib/auth");
+                await signOut();
+                window.location.href = "/admin/login";
+              }}
+            >
+              Log out
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

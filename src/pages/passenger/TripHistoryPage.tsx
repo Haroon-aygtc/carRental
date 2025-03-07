@@ -12,10 +12,10 @@ import {
   User,
   ArrowLeft,
   Search,
-  Download,
   Filter,
   Star,
 } from "lucide-react";
+import InvoiceDownload from "@/components/passenger/InvoiceDownload";
 
 const TripHistoryPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -258,22 +258,31 @@ const TripHistoryPage = () => {
                     <h4 className="text-sm font-medium text-gray-500 mb-1 font-sans">
                       Receipt
                     </h4>
-                    {selectedTrip.receipt ? (
-                      <Button variant="outline" size="sm" className="font-sans">
-                        <Download className="h-4 w-4 mr-2" /> Download Receipt
-                      </Button>
+                    {selectedTrip.status === "completed" ? (
+                      <InvoiceDownload
+                        tripId={selectedTrip.id}
+                        date={selectedTrip.date}
+                        time={selectedTrip.time}
+                        pickup={selectedTrip.pickup}
+                        destination={selectedTrip.destination}
+                        amount={selectedTrip.amount}
+                        driverName={selectedTrip.driver?.name}
+                        vehicleType={selectedTrip.vehicle}
+                      />
                     ) : (
-                      <p className="text-gray-500">No receipt available</p>
+                      <p className="text-gray-500">No invoice available</p>
                     )}
                   </div>
                   <div>
-                    <Button
-                      variant="outline"
-                      className="mr-2 font-sans"
-                      disabled={selectedTrip.status === "cancelled"}
-                    >
-                      Book Similar Trip
-                    </Button>
+                    <Link to={`/passenger/book?similar=${selectedTrip.id}`}>
+                      <Button
+                        variant="outline"
+                        className="mr-2 font-sans"
+                        disabled={selectedTrip.status === "cancelled"}
+                      >
+                        Book Similar Trip
+                      </Button>
+                    </Link>
                     <Button
                       className="bg-[#001F3F] hover:bg-blue-900 text-white font-sans rounded-md shadow-sm"
                       disabled={selectedTrip.status === "cancelled"}
@@ -289,7 +298,7 @@ const TripHistoryPage = () => {
           <>
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-bold font-sans">Trip History</h1>
-              <Link to="/booking">
+              <Link to="/passenger/book">
                 <Button className="bg-[#001F3F] hover:bg-blue-900 text-white font-sans rounded-md shadow-sm">
                   Book New Trip
                 </Button>
@@ -368,17 +377,31 @@ const TripHistoryPage = () => {
                             ${trip.amount.toFixed(2)}
                           </p>
                           <p className="text-sm text-gray-500">{trip.id}</p>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="mt-2 text-blue-600 hover:text-blue-800 font-sans"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedTrip(trip);
-                            }}
-                          >
-                            View Details
-                          </Button>
+                          <div className="mt-2 flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+                            {trip.status === "completed" && (
+                              <InvoiceDownload
+                                tripId={trip.id}
+                                date={trip.date}
+                                time={trip.time}
+                                pickup={trip.pickup}
+                                destination={trip.destination}
+                                amount={trip.amount}
+                                driverName={trip.driver?.name}
+                                vehicleType={trip.vehicle}
+                              />
+                            )}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-blue-600 hover:text-blue-800 font-sans"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedTrip(trip);
+                              }}
+                            >
+                              View Details
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </CardContent>
@@ -408,7 +431,7 @@ const TripHistoryPage = () => {
                         Clear Filters
                       </Button>
                     )}
-                    <Link to="/booking">
+                    <Link to="/passenger/book">
                       <Button className="bg-[#001F3F] hover:bg-blue-900 text-white font-sans rounded-md shadow-sm">
                         Book Your First Trip
                       </Button>

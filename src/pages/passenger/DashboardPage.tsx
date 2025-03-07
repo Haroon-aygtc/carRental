@@ -18,6 +18,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import ETADisplay from "@/components/passenger/ETADisplay";
+import InvoiceDownload from "@/components/passenger/InvoiceDownload";
 
 const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -214,30 +215,38 @@ const DashboardPage = () => {
                     >
                       <Calendar className="h-4 w-4 mr-2" /> Dashboard
                     </TabsTrigger>
-                    <TabsTrigger
-                      value="book"
-                      className="justify-start py-3 px-4 font-sans"
-                    >
-                      <Car className="h-4 w-4 mr-2" /> Book a Ride
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="trips"
-                      className="justify-start py-3 px-4 font-sans"
-                    >
-                      <FileText className="h-4 w-4 mr-2" /> Trip History
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="payment"
-                      className="justify-start py-3 px-4 font-sans"
-                    >
-                      <CreditCard className="h-4 w-4 mr-2" /> Payment Methods
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="profile"
-                      className="justify-start py-3 px-4 font-sans"
-                    >
-                      <User className="h-4 w-4 mr-2" /> Profile Settings
-                    </TabsTrigger>
+                    <Link to="/passenger/book" className="w-full">
+                      <TabsTrigger
+                        value="book"
+                        className="justify-start py-3 px-4 font-sans w-full"
+                      >
+                        <Car className="h-4 w-4 mr-2" /> Book a Ride
+                      </TabsTrigger>
+                    </Link>
+                    <Link to="/passenger/trips" className="w-full">
+                      <TabsTrigger
+                        value="trips"
+                        className="justify-start py-3 px-4 font-sans w-full"
+                      >
+                        <FileText className="h-4 w-4 mr-2" /> Trip History
+                      </TabsTrigger>
+                    </Link>
+                    <Link to="/passenger/payment-methods" className="w-full">
+                      <TabsTrigger
+                        value="payment"
+                        className="justify-start py-3 px-4 font-sans w-full"
+                      >
+                        <CreditCard className="h-4 w-4 mr-2" /> Payment Methods
+                      </TabsTrigger>
+                    </Link>
+                    <Link to="/passenger/profile" className="w-full">
+                      <TabsTrigger
+                        value="profile"
+                        className="justify-start py-3 px-4 font-sans w-full"
+                      >
+                        <User className="h-4 w-4 mr-2" /> Profile Settings
+                      </TabsTrigger>
+                    </Link>
                   </TabsList>
                 </Tabs>
               </CardContent>
@@ -319,9 +328,11 @@ const DashboardPage = () => {
                       </div>
 
                       <div className="mt-4 flex justify-between">
-                        <Button variant="outline" className="font-sans">
-                          Contact Driver
-                        </Button>
+                        <a href={`tel:${activeTrip.driver.phone}`}>
+                          <Button variant="outline" className="font-sans">
+                            Contact Driver
+                          </Button>
+                        </a>
                         <Link to="/passenger/track">
                           <Button className="bg-[#001F3F] hover:bg-blue-900 text-white font-sans rounded-md shadow-sm">
                             Track Ride
@@ -429,19 +440,23 @@ const DashboardPage = () => {
                               </div>
                             </div>
                             <div className="mt-4 flex justify-end">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="mr-2 font-sans"
-                              >
-                                Modify
-                              </Button>
-                              <Button
-                                size="sm"
-                                className="bg-[#001F3F] hover:bg-blue-900 text-white font-sans rounded-md shadow-sm"
-                              >
-                                View Details
-                              </Button>
+                              <Link to={`/passenger/book?modify=${trip.id}`}>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="mr-2 font-sans"
+                                >
+                                  Modify
+                                </Button>
+                              </Link>
+                              <Link to={`/passenger/trips?id=${trip.id}`}>
+                                <Button
+                                  size="sm"
+                                  className="bg-[#001F3F] hover:bg-blue-900 text-white font-sans rounded-md shadow-sm"
+                                >
+                                  View Details
+                                </Button>
+                              </Link>
                             </div>
                           </div>
                         ))}
@@ -510,19 +525,24 @@ const DashboardPage = () => {
                             </div>
                           </div>
                           <div className="mt-4 flex justify-end">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="mr-2 font-sans"
-                            >
-                              Receipt
-                            </Button>
-                            <Button
-                              size="sm"
-                              className="bg-[#001F3F] hover:bg-blue-900 text-white font-sans rounded-md shadow-sm"
-                            >
-                              View Details
-                            </Button>
+                            <InvoiceDownload
+                              tripId={trip.id}
+                              date={trip.date}
+                              time={trip.time}
+                              pickup={trip.pickup}
+                              destination={trip.destination}
+                              amount={trip.amount}
+                              driverName={trip.driver?.name}
+                              vehicleType={trip.vehicle}
+                            />
+                            <Link to={`/passenger/trips?id=${trip.id}`}>
+                              <Button
+                                size="sm"
+                                className="bg-[#001F3F] hover:bg-blue-900 text-white font-sans rounded-md shadow-sm"
+                              >
+                                View Details
+                              </Button>
+                            </Link>
                           </div>
                         </div>
                       ))}
@@ -596,19 +616,24 @@ const DashboardPage = () => {
                           </div>
                         </div>
                         <div className="mt-4 flex justify-end">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="mr-2 font-sans"
-                          >
-                            Receipt
-                          </Button>
-                          <Button
-                            size="sm"
-                            className="bg-[#001F3F] hover:bg-blue-900 text-white font-sans rounded-md shadow-sm"
-                          >
-                            View Details
-                          </Button>
+                          <InvoiceDownload
+                            tripId={trip.id}
+                            date={trip.date}
+                            time={trip.time}
+                            pickup={trip.pickup}
+                            destination={trip.destination}
+                            amount={trip.amount}
+                            driverName={trip.driver?.name}
+                            vehicleType={trip.vehicle}
+                          />
+                          <Link to={`/passenger/trips?id=${trip.id}`}>
+                            <Button
+                              size="sm"
+                              className="bg-[#001F3F] hover:bg-blue-900 text-white font-sans rounded-md shadow-sm"
+                            >
+                              View Details
+                            </Button>
+                          </Link>
                         </div>
                       </div>
                     ))}

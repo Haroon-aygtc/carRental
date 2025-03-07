@@ -27,6 +27,9 @@ import ExportAsPDF from "./pages/admin/reports/ExportAsPDF";
 import ExportAsExcel from "./pages/admin/reports/ExportAsExcel";
 import Settings from "./pages/admin/settings";
 import AdminLayout from "./components/admin/AdminLayout";
+import AdminLogin from "./components/admin/AdminLogin";
+import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
+import { supabase } from "./lib/auth";
 
 // User Management
 import ViewUsers from "./pages/admin/user-management/ViewUsers";
@@ -80,87 +83,96 @@ function App() {
           <Route path="/passenger/trips" element={<TripHistoryPage />} />
           <Route path="/passenger/book" element={<BookRidePage />} />
           <Route path="/passenger/track" element={<TrackRidePage />} />
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route path="dashboard" element={<Dashboard />} />
 
-            {/* User Management Routes */}
-            <Route path="user-management" element={<UserManagement />} />
-            <Route path="user-management/view" element={<ViewUsers />} />
-            <Route
-              path="user-management/add-edit"
-              element={<AddEditDeleteUsers />}
-            />
-            <Route
-              path="user-management/roles"
-              element={<AssignRolesPermissions />}
-            />
+          {/* Admin routes with authentication */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminProtectedRoute />}>
+            <Route element={<AdminLayout />}>
+              <Route path="dashboard" element={<Dashboard />} />
 
-            {/* Driver Management Routes */}
-            <Route path="driver-management" element={<DriverManagement />} />
-            <Route path="driver-management/view" element={<ViewDrivers />} />
-            <Route
-              path="driver-management/add-edit"
-              element={<AddEditDeleteDrivers />}
-            />
-            <Route
-              path="driver-management/assign-vehicles"
-              element={<AssignVehicles />}
-            />
-            <Route
-              path="driver-management/performance"
-              element={<TrackPerformance />}
-            />
+              {/* User Management Routes */}
+              <Route path="user-management" element={<UserManagement />} />
+              <Route path="user-management/view" element={<ViewUsers />} />
+              <Route
+                path="user-management/add-edit"
+                element={<AddEditDeleteUsers />}
+              />
+              <Route
+                path="user-management/roles"
+                element={<AssignRolesPermissions />}
+              />
 
-            {/* Fleet Management Routes */}
-            <Route path="fleet-management" element={<FleetManagement />} />
-            <Route path="fleet-management/view" element={<ViewVehicles />} />
-            <Route
-              path="fleet-management/add-edit"
-              element={<AddEditDeleteVehicles />}
-            />
-            <Route
-              path="fleet-management/maintenance"
-              element={<MaintenanceScheduling />}
-            />
+              {/* Driver Management Routes */}
+              <Route path="driver-management" element={<DriverManagement />} />
+              <Route path="driver-management/view" element={<ViewDrivers />} />
+              <Route
+                path="driver-management/add-edit"
+                element={<AddEditDeleteDrivers />}
+              />
+              <Route
+                path="driver-management/assign-vehicles"
+                element={<AssignVehicles />}
+              />
+              <Route
+                path="driver-management/performance"
+                element={<TrackPerformance />}
+              />
 
-            {/* Booking Management Routes */}
-            <Route path="booking-management" element={<BookingManagement />} />
-            <Route
-              path="booking-management/view"
-              element={<ViewAllBookings />}
-            />
-            <Route
-              path="booking-management/status"
-              element={<ManageBookingStatus />}
-            />
-            <Route
-              path="booking-management/assign-drivers"
-              element={<AssignDrivers />}
-            />
+              {/* Fleet Management Routes */}
+              <Route path="fleet-management" element={<FleetManagement />} />
+              <Route path="fleet-management/view" element={<ViewVehicles />} />
+              <Route
+                path="fleet-management/add-edit"
+                element={<AddEditDeleteVehicles />}
+              />
+              <Route
+                path="fleet-management/maintenance"
+                element={<MaintenanceScheduling />}
+              />
 
-            {/* Financial Tools Routes */}
-            <Route path="financial-tools" element={<FinancialTools />} />
-            <Route
-              path="financial-tools/payroll"
-              element={<PayrollManagement />}
-            />
-            <Route
-              path="financial-tools/expenses"
-              element={<ExpenseTracking />}
-            />
-            <Route
-              path="financial-tools/revenue"
-              element={<RevenueMonitoring />}
-            />
+              {/* Booking Management Routes */}
+              <Route
+                path="booking-management"
+                element={<BookingManagement />}
+              />
+              <Route
+                path="booking-management/view"
+                element={<ViewAllBookings />}
+              />
+              <Route
+                path="booking-management/status"
+                element={<ManageBookingStatus />}
+              />
+              <Route
+                path="booking-management/assign-drivers"
+                element={<AssignDrivers />}
+              />
 
-            <Route path="reports" element={<Reports />}>
-              <Route path="generate" element={<GenerateReports />} />
-              <Route path="pdf" element={<ExportAsPDF />} />
-              <Route path="excel" element={<ExportAsExcel />} />
-              <Route index element={<Navigate to="generate" replace />} />
+              {/* Financial Tools Routes */}
+              <Route path="financial-tools" element={<FinancialTools />} />
+              <Route
+                path="financial-tools/payroll"
+                element={<PayrollManagement />}
+              />
+              <Route
+                path="financial-tools/expenses"
+                element={<ExpenseTracking />}
+              />
+              <Route
+                path="financial-tools/revenue"
+                element={<RevenueMonitoring />}
+              />
+
+              <Route path="reports" element={<Reports />}>
+                <Route path="generate" element={<GenerateReports />} />
+                <Route path="pdf" element={<ExportAsPDF />} />
+                <Route path="excel" element={<ExportAsExcel />} />
+                <Route index element={<Navigate to="generate" replace />} />
+              </Route>
+              <Route path="settings" element={<Settings />} />
             </Route>
-            <Route path="settings" element={<Settings />} />
           </Route>
+
           {/* Tempobook routes for development */}
           {import.meta.env.VITE_TEMPO === "true" && (
             <Route path="/tempobook/*" />
