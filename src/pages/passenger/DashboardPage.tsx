@@ -167,9 +167,11 @@ const DashboardPage = () => {
               />
               <span className="font-medium">{user.name}</span>
             </div>
-            <Button variant="ghost" size="sm" className="text-white">
-              <LogOut className="h-4 w-4 mr-1" /> Logout
-            </Button>
+            <Link to="/passenger/login">
+              <Button variant="ghost" size="sm" className="text-white">
+                <LogOut className="h-4 w-4 mr-1" /> Logout
+              </Button>
+            </Link>
           </div>
         </div>
       </header>

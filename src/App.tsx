@@ -9,6 +9,11 @@ import ServiceLocationsPage from "./pages/website/ServiceLocationsPage";
 import BookingPage from "./pages/website/BookingPage";
 import LoginPage from "./pages/passenger/LoginPage";
 import DashboardPage from "./pages/passenger/DashboardPage";
+import ProfilePage from "./pages/passenger/ProfilePage";
+import PaymentMethodsPage from "./pages/passenger/PaymentMethodsPage";
+import TripHistoryPage from "./pages/passenger/TripHistoryPage";
+import BookRidePage from "./pages/passenger/BookRidePage";
+import TrackRidePage from "./pages/passenger/TrackRidePage";
 import routes from "tempo-routes";
 import Dashboard from "./pages/admin/dashboard";
 import UserManagement from "./pages/admin/user-management";
@@ -67,6 +72,14 @@ function App() {
           />
           <Route path="/passenger/login" element={<LoginPage />} />
           <Route path="/passenger/dashboard" element={<DashboardPage />} />
+          <Route path="/passenger/profile" element={<ProfilePage />} />
+          <Route
+            path="/passenger/payment-methods"
+            element={<PaymentMethodsPage />}
+          />
+          <Route path="/passenger/trips" element={<TripHistoryPage />} />
+          <Route path="/passenger/book" element={<BookRidePage />} />
+          <Route path="/passenger/track" element={<TrackRidePage />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
 
